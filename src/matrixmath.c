@@ -51,7 +51,7 @@ matrix *flippedIdentity(int n)
   {
     for(int j = 0; j<n; j++)
     {
-      if(i+j == n)
+      if(i+j == n-1)
       {
 	fi->R[i][j] = 1;
 	fi->G[i][j] = 1;
