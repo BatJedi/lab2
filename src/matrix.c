@@ -13,10 +13,14 @@ int matrixalloc(matrix X)
   
   int rows = X->rows;
   int cols = X->cols;
-  X->mat = malloc(sizeof(float*)*rows);
+  X->R = malloc(sizeof(float*)*rows);
+  X->G = malloc(sizeof(float*)*rows);
+  X->B = malloc(sizeof(float*)*rows);
   for(int i = 0; i<rows; i++)
   {
-    X->mat[i] = malloc(sizeof(float)*cols);
+    X->R[i] = malloc(sizeof(float)*cols);
+    X->G[i] = malloc(sizeof(float)*cols);
+    X->B[i] = malloc(sizeof(float)*cols);
   }
   return 0;
 }
@@ -33,7 +37,13 @@ matrix creatematrix(int rows,int cols)
 void freematrix(matrix X)
 {
   for(int i = 0; i<X->rows; i++)
-    free(X->mat[i]);
-  free(X->mat);
+  {
+    free(X->R[i]);
+    free(X->G[i]);
+    free(X->B[i]);
+  }
+  free(X->R);
+  free(X->G);
+  free(X->B);
   free(X);
 }

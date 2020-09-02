@@ -12,14 +12,18 @@ int main()
   if(inp == NULL) return 1;
   for(int i = 0; i<5; i++)
     for(int j = 0; j<5;j++)
-      inp->mat[i][j] = i+j;
+    {
+      inp->R[i][j] = i+j;
+      inp->G[i][j] = i+j;
+      inp->B[i][j] = i+j;
+    }
   
   matrix transformed = flipTrans(inp);
   for(int i = 0; i<5; i++)
   {
     for(int j = 0; j<5;j++)
     {
-      printf("%f ", inp->mat[i][j]);
+      printf("%f ", inp->R[i][j]);
     }
     printf("\n");
   }
@@ -30,7 +34,7 @@ int main()
   {
     for(int j = 0; j<5;j++)
     {
-      printf("%f ", transformed->mat[i][j]);
+      printf("%f ", transformed->R[i][j]);
     }
     printf("\n");
   }
