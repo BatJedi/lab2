@@ -8,8 +8,10 @@ typedef struct matrix
   int **R;
   int **G;
   int **B;
-} matrix;
+}* matrix;
 
-int matrixalloc(matrix *);
-void freematrix(matrix *);
+int matrixalloc(matrix);
+matrix creatematrix(int rows, int cols);
+matrix emptyMatrixStruct();
+void freematrix(matrix);
 #endif

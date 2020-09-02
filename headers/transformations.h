@@ -2,5 +2,5 @@
 #define TRANSFORMATIONS
 #include "matrix.h"
 
-matrix *flipTrans(matrix *X);
+matrix flipTrans(matrix);
 #endif

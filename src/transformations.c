@@ -3,10 +3,10 @@
 #include "transformations.h"
 #include <stdlib.h>
 
-matrix *flipTrans(matrix *X)
+matrix flipTrans(matrix X)
 {
-  matrix *flipped = malloc(sizeof(matrix));
-  matrix *transformation = flippedIdentity(X->cols);
+  matrix flipped = emptyMatrixStruct();
+  matrix transformation = flippedIdentity(X->cols);
   if(multiply(flipped, X, transformation) != 0) return NULL;
   freematrix(transformation);
   return flipped;

@@ -2,13 +2,14 @@
 #include <stdlib.h>
 #include "matrix.h"
 #include "matrixmath.h"
+#include "transformations.h"
 
 int main()
 {
-  matrix * inp = malloc(sizeof(matrix));
-  inp->rows = 5;
-  inp->cols = 5;
-  if(matrixalloc(inp)!= 0) return 1;
+  int rows = 5;
+  int cols = 5;
+  matrix inp = creatematrix(rows, cols);
+  if(inp == NULL) return 1;
   for(int i = 0; i<5; i++)
   {
     for(int j = 0; j<5;j++)
@@ -18,7 +19,7 @@ int main()
       inp->B[i][j] = i+j;
     }
   }
-  matrix *transformed = flipTrans(inp);
+  matrix transformed = flipTrans(inp);
   for(int i = 0; i<5; i++)
   {
     for(int j = 0; j<5;j++)

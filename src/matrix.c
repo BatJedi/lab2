@@ -1,7 +1,13 @@
 #include "matrix.h"
 #include <stdlib.h>
 
-int matrixalloc(matrix *X)
+matrix emptyMatrixStruct() //allocates space for a matrix struct and returns pointer to it.
+{
+  matrix res = malloc(sizeof(struct matrix));
+  return res;
+}
+
+int matrixalloc(matrix X)
 {
   if(X == NULL) return 1;
   
@@ -20,7 +26,16 @@ int matrixalloc(matrix *X)
   return 0;
 }
 
-void freematrix(matrix *X)
+matrix creatematrix(int rows,int cols)
+{
+  matrix res = emptyMatrixStruct();
+  res->rows = rows;
+  res->cols = cols;
+  if(matrixalloc(res) != 0) return NULL;
+  return res;
+}
+
+void freematrix(matrix X)
 {
   for(int i = 0; i<X->rows; i++)
   {

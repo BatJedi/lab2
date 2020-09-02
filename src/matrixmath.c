@@ -3,7 +3,7 @@
 #include "transformations.h"
 #include <stdlib.h>
 
-int multiply(matrix *P, matrix *A, matrix *B)
+int multiply(matrix P, matrix A, matrix B) //multiplies A and B and stores the result in P. Note that to call this function, you need to allocate space for
 {
   if(A->cols != B->rows)
   {
@@ -35,12 +35,10 @@ int multiply(matrix *P, matrix *A, matrix *B)
 
 
 
-matrix *flippedIdentity(int n)
+matrix flippedIdentity(int n)
 {
-  matrix *fi = malloc(sizeof(matrix));
-  fi->rows = n;
-  fi->cols = n;
-  if(matrixalloc(fi) != 0) return NULL;
+  matrix fi = creatematrix(n,n);
+  if(fi == NULL) return NULL;
   for(int i = 0; i<n; i++)
   {
     for(int j = 0; j<n; j++)
