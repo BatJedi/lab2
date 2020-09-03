@@ -5,9 +5,9 @@ typedef struct matrix
 {
   unsigned int rows;
   unsigned int cols;
-  unsigned char **R;
-  unsigned char **G;
-  unsigned char **B;
+  int **R;
+  int **G;
+  int **B;
 }* matrix;
 
 int matrixalloc(matrix);

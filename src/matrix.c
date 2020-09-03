@@ -14,19 +14,19 @@ int matrixalloc(matrix X)
   
   int rows = X->rows;
   int cols = X->cols;
-  X->R = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  X->R = (int**)malloc(sizeof(int*)*rows);
   if(!(X->R)) return 2;
-  X->G = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  X->G = (int**)malloc(sizeof(int*)*rows);
   if(!(X->G)) return 2;
-  X->B = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  X->B = (int**)malloc(sizeof(int*)*rows);
   if(!(X->B)) return 2;
   for(int i = 0; i<rows; i++)
   {
-    X->R[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    X->R[i] = (int*)malloc(sizeof(int)*cols);
     if(!(X->R[i])) return 2;
-    X->G[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    X->G[i] = (int*)malloc(sizeof(int)*cols);
     if(!(X->G[i])) return 2;
-    X->B[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    X->B[i] = (int*)malloc(sizeof(int)*cols);
     if(!(X->B[i])) return 2;
   }
   return 0;
