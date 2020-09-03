@@ -5,7 +5,7 @@
 struct image
 {
   unsigned int height, width;
-  short maxval;
+  int maxval;
   matrix img;
 };
 
