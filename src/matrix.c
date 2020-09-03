@@ -3,7 +3,7 @@
 
 matrix emptyMatrixStruct() //allocates space for a matrix struct and returns pointer to it.
 {
-  matrix res = malloc(sizeof(struct matrix));
+  matrix res = (matrix)malloc(sizeof(struct matrix));
   return res;
 }
 
@@ -13,14 +13,14 @@ int matrixalloc(matrix X)
   
   int rows = X->rows;
   int cols = X->cols;
-  X->R = malloc(sizeof(unsigned char*)*rows);
-  X->G = malloc(sizeof(unsigned char*)*rows);
-  X->B = malloc(sizeof(unsigned char*)*rows);
+  X->R = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  X->G = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  X->B = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
   for(int i = 0; i<rows; i++)
   {
-    X->R[i] = malloc(sizeof(unsigned char)*cols);
-    X->G[i] = malloc(sizeof(unsigned char)*cols);
-    X->B[i] = malloc(sizeof(unsigned char)*cols);
+    X->R[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    X->G[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    X->B[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
   }
   return 0;
 }
