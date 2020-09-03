@@ -14,4 +14,7 @@ int matrixalloc(matrix);
 matrix creatematrix(int rows, int cols);
 matrix emptyMatrixStruct();
 void freematrix(matrix);
+matrix paddedSlidingWindow(matrix, int, int);
+matrix flatten(matrix);
+matrix reshape(matrix, int rows, int cols);
 #endif

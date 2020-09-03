@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 matrix emptyMatrixStruct() //allocates space for a matrix struct and returns pointer to it.
 {
@@ -55,3 +56,127 @@ void freematrix(matrix X)
   if(X->B != NULL) free(X->B);
   free(X);
 }
+
+matrix paddedSlidingWindow(matrix input, int windowSize, int padVal)
+{
+  int padding = windowSize/2;
+  if(padding < 0 || padVal < 0 || padVal > 255 || input == NULL)
+  {
+    fprintf(stderr, "Incorrect inputs. Terminating.");
+    return input;
+  }
+  int rows = input->rows;
+  int cols = input->cols;
+  
+  matrix result = creatematrix(windowSize*windowSize, rows*cols);
+
+  int resultColIdx = 0;
+  for(int i = 0; i<rows; i++)
+  {
+    for (int j = 0; j<cols; j++)
+    {
+      int resultRowIdx = 0;
+      for(int colIdx = j-padding; colIdx <= j+padding; colIdx++)
+      {
+	for(int rowIdx = i-padding; rowIdx <= i+padding; rowIdx++)
+	{
+	  int valueR = padVal;
+	  int valueG = padVal;
+	  int valueB = padVal;
+	  if((rowIdx>=0 && rowIdx < rows) && (colIdx >= 0 && colIdx < cols))
+	  {
+	    valueR = input->R[rowIdx][colIdx];
+	    valueG = input->G[rowIdx][colIdx];
+	    valueB = input->B[rowIdx][colIdx];
+	  }
+	  result->R[resultRowIdx][resultColIdx] = valueR;
+	  result->G[resultRowIdx][resultColIdx] = valueG;
+	  result->B[resultRowIdx][resultColIdx] = valueB;
+
+	  resultRowIdx++; 
+	}
+      }
+      resultColIdx++;
+    }
+  }
+
+  if(resultColIdx != rows*cols)
+  {
+    freematrix(result);
+    fprintf(stderr,"Error in generating sliding window matrix. Aborting operation.\n");
+    return input;
+  }
+
+  return result;
+  
+}
+
+matrix flatten(matrix input)
+{
+  if(!input)
+  {
+    fprintf(stderr, "No matrix given. Aborted.\n");
+    return input;
+  }
+  
+  int rows = input->rows;
+  int cols = input->cols;
+
+  matrix result = creatematrix(1, rows*cols);
+
+  int idx = 0;
+  for(int i = 0; i<rows; i++)
+  {
+    for(int j = 0; j<cols; j++)
+    {
+      result->R[0][idx] = input->R[i][j];
+      result->G[0][idx] = input->G[i][j];
+      result->B[0][idx] = input->B[i][j];
+      idx++;
+    }
+  }
+  if(idx != result->cols)
+  {
+    freematrix(result);
+    fprintf(stderr, "Error in flattening matrix. Aboring.");
+    return input;
+  }
+  return result;
+}
+
+matrix reshape(matrix input, int rows, int cols)
+{
+  if(!input)
+  {
+    fprintf(stderr, "No matrix given. Aborted.\n");
+    return input;
+  }
+  
+  if(input->rows != 1 || rows*cols != input->cols)
+  {
+    fprintf(stderr, "Incorrect input. Aborted operation.\n");
+    return input;
+  }
+
+  matrix result = creatematrix(rows, cols);
+  int idx = 0;
+  for(int i = 0; i<rows; i++)
+  {
+    for(int j = 0; j<cols; j++)
+    {
+      result->R[i][j] = input->R[0][idx];
+      result->G[i][j] = input->G[0][idx];
+      result->B[i][j] = input->B[0][idx];
+      idx++;
+    }
+  }
+
+  if(idx != input->cols)
+  {
+    fprintf(stderr, "Some error occurred. Aborting.\n");
+    freematrix(result);
+    return input;
+  }
+  return result;
+}
+
