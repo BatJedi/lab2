@@ -13,14 +13,14 @@ int matrixalloc(matrix X)
   
   int rows = X->rows;
   int cols = X->cols;
-  X->R = malloc(sizeof(float*)*rows);
-  X->G = malloc(sizeof(float*)*rows);
-  X->B = malloc(sizeof(float*)*rows);
+  X->R = malloc(sizeof(unsigned char*)*rows);
+  X->G = malloc(sizeof(unsigned char*)*rows);
+  X->B = malloc(sizeof(unsigned char*)*rows);
   for(int i = 0; i<rows; i++)
   {
-    X->R[i] = malloc(sizeof(float)*cols);
-    X->G[i] = malloc(sizeof(float)*cols);
-    X->B[i] = malloc(sizeof(float)*cols);
+    X->R[i] = malloc(sizeof(unsigned char)*cols);
+    X->G[i] = malloc(sizeof(unsigned char)*cols);
+    X->B[i] = malloc(sizeof(unsigned char)*cols);
   }
   return 0;
 }
