@@ -3,41 +3,29 @@
 #include "matrix.h"
 #include "matrixmath.h"
 #include "transformations.h"
+#include "ppm.h"
+
+int applyFlipping(image toFlip)
+{
+  if(!toFlip) return 1;
+  matrix img = toFlip->img;
+  matrix flippedimg = flipTrans(img);
+  toFlip->img = flippedimg;
+  if(img != NULL) freematrix(img);
+  else return 1;
+  return 0;
+}
 
 int main()
 {
-  int rows = 5;
-  int cols = 5;
-  matrix inp = creatematrix(rows, cols);
-  if(inp == NULL) return 1;
-  for(int i = 0; i<5; i++)
-    for(int j = 0; j<5;j++)
-    {
-      inp->R[i][j] = i+j;
-      inp->G[i][j] = i+j;
-      inp->B[i][j] = i+j;
-    }
-  
-  matrix transformed = flipTrans(inp);
-  for(int i = 0; i<5; i++)
+  image inputimg = readPPM("/home/yuvraj/Pictures/sedcat.ppm");
+  int flipResult = applyFlipping(inputimg);
+  if(flipResult != 0)
   {
-    for(int j = 0; j<5;j++)
-    {
-      printf("%d ", inp->R[i][j]);
-    }
-    printf("\n");
+    fprintf(stderr, "Error applying flipping transformation");
+    return 1;
   }
-
-  printf("\n");
-  
-  for(int i = 0; i<5; i++)
-  {
-    for(int j = 0; j<5;j++)
-    {
-      printf("%d ", transformed->R[i][j]);
-    }
-    printf("\n");
-  }
-  freematrix(inp);
-  freematrix(transformed);
+  writePPM(inputimg, "/home/yuvraj/Pictures/bruh.ppm");
+  freeimage(inputimg);
+  return 0;
 }

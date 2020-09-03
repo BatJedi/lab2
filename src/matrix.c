@@ -4,6 +4,7 @@
 matrix emptyMatrixStruct() //allocates space for a matrix struct and returns pointer to it.
 {
   matrix res = (matrix)malloc(sizeof(struct matrix));
+  if(!res) return NULL;
   return res;
 }
 
@@ -14,13 +15,19 @@ int matrixalloc(matrix X)
   int rows = X->rows;
   int cols = X->cols;
   X->R = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  if(!(X->R)) return 2;
   X->G = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  if(!(X->G)) return 2;
   X->B = (unsigned char**)malloc(sizeof(unsigned char*)*rows);
+  if(!(X->B)) return 2;
   for(int i = 0; i<rows; i++)
   {
     X->R[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    if(!(X->R[i])) return 2;
     X->G[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    if(!(X->G[i])) return 2;
     X->B[i] = (unsigned char*)malloc(sizeof(unsigned char)*cols);
+    if(!(X->B[i])) return 2;
   }
   return 0;
 }
@@ -36,14 +43,15 @@ matrix creatematrix(int rows,int cols)
 
 void freematrix(matrix X)
 {
+  if(!X) return;
   for(int i = 0; i<X->rows; i++)
   {
-    free(X->R[i]);
-    free(X->G[i]);
-    free(X->B[i]);
+    if(X->R[i] != NULL) free(X->R[i]);
+    if(X->G[i] != NULL) free(X->G[i]);
+    if(X->B[i] != NULL) free(X->B[i]);
   }
-  free(X->R);
-  free(X->G);
-  free(X->B);
+  if(X->R != NULL) free(X->R);
+  if(X->G != NULL) free(X->G);
+  if(X->B != NULL) free(X->B);
   free(X);
 }

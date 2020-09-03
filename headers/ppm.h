@@ -11,7 +11,9 @@ struct image
 
 typedef struct image* image;
 
+void errmessage(char *);
 image readPPM(char *);
-int writePPM(image);
+int writePPM(image, char *);
+void freeimage(image);
 
 #endif
