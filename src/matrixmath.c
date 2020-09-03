@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int abs(int x)
+{
+  if(x >=0)
+    return x;
+  else
+    return -1*x;
+}
+
 int multiply(matrix P, matrix A, matrix B) /*multiplies A and B and stores the result in P. Note that to call this function, you need to allocate space for P struct pointer using emptyMatrixStruct()*/
 {
   if(A->cols != B->rows)
@@ -31,7 +39,55 @@ int multiply(matrix P, matrix A, matrix B) /*multiplies A and B and stores the r
   return 0;
 }
 
+int subtract(matrix P, matrix A, matrix B)
+{
+  if(A->cols != B->cols || A->rows != B->rows)
+  {
+    return 1;
+  }
+  
+  int rows = A->rows;
+  int cols = A->cols;
+  P->rows = rows;
+  P->cols = cols;
+  
+  if(matrixalloc(P) != 0) return 2;
+  
+  for(int i = 0; i<rows; i++)
+    for (int j = 0; j<cols; j++)
+    {
+      P->R[i][j] = (A->R[i][j] - B->R[i][j]);
+      P->G[i][j] = (A->G[i][j] - B->G[i][j]);
+      P->B[i][j] = (A->B[i][j] - B->B[i][j]);
+    }
+  
+  return 0;
+}
 
+int add(matrix P, matrix A, matrix B)
+{
+  if(A->cols != B->cols || A->rows != B->rows)
+  {
+    return 1;
+  }
+  
+  int rows = A->rows;
+  int cols = A->cols;
+  P->rows = rows;
+  P->cols = cols;
+  
+  if(matrixalloc(P) != 0) return 2;
+  
+  for(int i = 0; i<rows; i++)
+    for (int j = 0; j<cols; j++)
+    {
+      P->R[i][j] = (A->R[i][j] + B->R[i][j]);
+      P->G[i][j] = (A->G[i][j] + B->G[i][j]);
+      P->B[i][j] = (A->B[i][j] + B->B[i][j]);
+    }
+  
+  return 0;
+}
 
 matrix flippedIdentity(int n)
 {

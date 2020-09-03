@@ -93,6 +93,7 @@ int writePPM(image writeimg, char *outputpath)
     return 1;
   }
   fclose(fp);
+  return 0;
 }
 
 void freeimage(image toFree)

@@ -12,7 +12,8 @@ matrix emptyMatrixStruct() //allocates space for a matrix struct and returns poi
 int matrixalloc(matrix X)
 {
   if(X == NULL) return 1;
-  
+  if(X->rows <= 0 || X->cols <=0)
+    return 2;
   int rows = X->rows;
   int cols = X->cols;
   X->R = (int**)malloc(sizeof(int*)*rows);
@@ -36,6 +37,7 @@ int matrixalloc(matrix X)
 matrix creatematrix(int rows,int cols)
 {
   matrix res = emptyMatrixStruct();
+  if(!res) return NULL;
   res->rows = rows;
   res->cols = cols;
   if(matrixalloc(res) != 0) return NULL;
@@ -59,8 +61,9 @@ void freematrix(matrix X)
 
 matrix paddedSlidingWindow(matrix input, int windowSize, int padVal)
 {
+  if(!input) return input;
   int padding = windowSize/2;
-  if(padding < 0 || padVal < 0 || padVal > 255 || input == NULL)
+  if(padding < 0 || input == NULL)
   {
     fprintf(stderr, "Incorrect inputs. Terminating.");
     return input;
@@ -69,16 +72,17 @@ matrix paddedSlidingWindow(matrix input, int windowSize, int padVal)
   int cols = input->cols;
   
   matrix result = creatematrix(windowSize*windowSize, rows*cols);
-
+  if(!result) return NULL;
+  
   int resultColIdx = 0;
   for(int i = 0; i<rows; i++)
   {
     for (int j = 0; j<cols; j++)
     {
       int resultRowIdx = 0;
-      for(int colIdx = j-padding; colIdx <= j+padding; colIdx++)
+      for(int rowIdx = i-padding; rowIdx <= i+padding; rowIdx++)
       {
-	for(int rowIdx = i-padding; rowIdx <= i+padding; rowIdx++)
+	for(int colIdx = j-padding; colIdx <= j+padding; colIdx++)
 	{
 	  int valueR = padVal;
 	  int valueG = padVal;
