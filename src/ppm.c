@@ -2,7 +2,7 @@
 #include "ppm.h"
 #include "stdlib.h"
 
-matrix readPPM(char *inputpath)
+image readPPM(char *inputpath)
 {
   return NULL;
 }

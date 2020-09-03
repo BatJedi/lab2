@@ -23,7 +23,7 @@ int main()
   {
     for(int j = 0; j<5;j++)
     {
-      printf("%f ", inp->R[i][j]);
+      printf("%d ", inp->R[i][j]);
     }
     printf("\n");
   }
@@ -34,7 +34,7 @@ int main()
   {
     for(int j = 0; j<5;j++)
     {
-      printf("%f ", transformed->R[i][j]);
+      printf("%d ", transformed->R[i][j]);
     }
     printf("\n");
   }
