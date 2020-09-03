@@ -53,3 +53,20 @@ matrix flippedIdentity(int n)
       
   return fi;
 }
+
+//changes made here
+matrix fillrand(int r, int c)
+{
+  matrix filter = creatematrix(r, c);
+  if(filter == NULL) return NULL;
+  for(int i=0; i<r; i++)
+  {
+    for(int j=0; j<c; j++)
+    {
+      filter->R[i][j] = (rand()%11)/10;
+      filter->G[i][j] = (rand()%11)/10;
+      filter->B[i][j] = (rand()%11)/10;
+    }
+  }
+  return filter;
+}

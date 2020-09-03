@@ -11,3 +11,12 @@ matrix flipTrans(matrix X)
   freematrix(transformation);
   return flipped;
 }
+
+//changes made here 
+matrix randfilterTrans(matrix X)
+{
+  matrix filtered = emptyMatrixStruct();
+  matrix filter = fillrand(X->rows, X->cols);
+  if(multiply(filtered, X, filter) !=0) return NULL;
+  return filtered;
+}
