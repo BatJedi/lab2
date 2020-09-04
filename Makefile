@@ -1,5 +1,6 @@
-all:	
-	gcc -o executable.o -I headers src/*.c
+
+all:	build
+
 
 clean:
 	rm executable.o
