@@ -33,11 +33,11 @@ matrix blur(matrix X, int padval)
   return conv;
 }
 
-matrix sharpen(matrix X)
+matrix deepFry(matrix X, int degree)
 {
   int padval = 0;
   if(!X) return X;
-  matrix kernel = sharpenKernel();
+  matrix kernel = fryKernel(degree);
   if(!kernel) return NULL;
   matrix conv = convolution(kernel, X, padval);
   if(!conv) return NULL;
@@ -57,6 +57,38 @@ int applyFlipping(image toFlip)
   return 0;
 }
 
+int applyCenterFlipping(image toFlip, int centerRows, int centerCols)
+{
+  if(!toFlip) return 1;
+  matrix img = toFlip->img;
+  if(img->rows < centerRows || img->cols < centerCols)
+  {
+    fprintf(stderr, "Invalid center matrix dimensions\n");
+    return 1;
+  }    
+  matrix center = creatematrix(centerRows, centerCols);
+  if(!center)
+  {
+    fprintf(stderr, "Error in space allocation for new matrix\n");
+    return 1;
+  }
+  if(fillCenter(img, center) != 0)
+  {
+    fprintf(stderr, "Error in flipping center\n");
+    return 1;
+  }
+  matrix flippedCenter = flipTrans(center);
+  freematrix(center);
+  if(!flippedCenter)
+    return 1;
+  if(swapCenter(img, flippedCenter) != 0)
+  {
+    fprintf(stderr, "Error in swapping center\n");
+    return 1;
+  }
+  freematrix(flippedCenter);
+}
+
 int applyBlur(image toBlur)
 {
   int padval = 0;
@@ -70,19 +102,19 @@ int applyBlur(image toBlur)
   return 0;
 }
 
-int applySharpen(image toSharpen)
+int applyDeepFry(image toFry, int degree)
 {
-  if(!toSharpen) return 1;
-  matrix img = toSharpen->img;
-  matrix sharpened = sharpen(img);
-  if(!sharpened) return 1;
-  toSharpen->img = sharpened;
+  if(!toFry) return 1;
+  matrix img = toFry->img;
+  matrix fried = deepFry(img, degree);
+  if(!fried) return 1;
+  toFry->img = fried;
   if(img != NULL) freematrix(img);
   else return 1;
   return 0;
 }
 
-matrix sharpenKernel()
+matrix fryKernel(int n)
 {
   matrix result = creatematrix(3,3);
   if(!result) return NULL;
@@ -105,9 +137,9 @@ matrix sharpenKernel()
       }
     }
   }
-  result->R[1][1] = 1;
-  result->G[1][1] = 1;
-  result->B[1][1] = 1;
+  result->R[1][1] = n;
+  result->G[1][1] = n;
+  result->B[1][1] = n;
   return result;
 }
 

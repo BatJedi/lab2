@@ -184,3 +184,64 @@ matrix reshape(matrix input, int rows, int cols)
   return result;
 }
 
+int swapCenter(matrix img, matrix center)
+{
+  int cenRows = center->rows;
+  int cenCols = center->cols;
+  int rows = img->rows;
+  int cols = img->cols;
+  if(cenRows > rows || cenCols >cols)
+    return 1;
+  int rowStart = (rows-cenRows)/2;
+  int colStart = (cols-cenCols)/2;
+  int rowEnd = rowStart+cenRows;
+  int colEnd = colStart+cenCols;
+  int rowIdx = 0;
+  int colIdx = 0;
+  for(int i = rowStart; i<rowEnd; i++)
+  {
+    colIdx = 0;
+    for(int j = colStart; j<colEnd; j++)
+    {
+      img->R[i][j] = center->R[rowIdx][colIdx];
+      img->G[i][j] = center->G[rowIdx][colIdx];
+      img->B[i][j] = center->B[rowIdx][colIdx];
+      colIdx++;
+    }
+    rowIdx++;
+  }
+  if(rowIdx == cenRows && colIdx == cenCols)
+    return 0;
+  else return 2;
+}
+
+int fillCenter(matrix img, matrix center)
+{
+  int cenRows = center->rows;
+  int cenCols = center->cols;
+  int rows = img->rows;
+  int cols = img->cols;
+  if(cenRows > rows || cenCols >cols)
+    return 1;
+  int rowStart = (rows-cenRows)/2;
+  int colStart = (cols-cenCols)/2;
+  int rowEnd = rowStart+cenRows;
+  int colEnd = colStart+cenCols;
+  int rowIdx = 0;
+  int colIdx = 0;
+  for(int i = rowStart; i<rowEnd; i++)
+  {
+    colIdx = 0;
+    for(int j = colStart; j<colEnd; j++)
+    {
+      center->R[rowIdx][colIdx] = img->R[i][j];
+      center->G[rowIdx][colIdx] = img->G[i][j];
+      center->B[rowIdx][colIdx] = img->B[i][j];
+      colIdx++;
+    }
+    rowIdx++;
+  }
+  if(rowIdx == cenRows && colIdx == cenCols)
+    return 0;
+  else return 2;
+}

@@ -63,7 +63,10 @@ int main(int argc, char* argv[])
     image inputimg = readPPM(inputpath);
     if(atoi(argv[1]) <= 1)
     {
-      int flipResult = applyFlipping(inputimg);
+      int centerRows = (inputimg->img->rows>=256)? 256:(inputimg->img->rows)/2;
+      int centerCols = (inputimg->img->cols>=256)? 256:(inputimg->img->cols)/2;
+  
+      int flipResult = applyCenterFlipping(inputimg, centerRows, centerCols);
       if(flipResult != 0)
       {
 	fprintf(stderr, "Error applying flipping transformation");

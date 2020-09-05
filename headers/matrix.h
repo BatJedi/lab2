@@ -17,4 +17,6 @@ void freematrix(matrix);
 matrix paddedSlidingWindow(matrix, int, int);
 matrix flatten(matrix);
 matrix reshape(matrix, int rows, int cols);
+int fillCenter(matrix, matrix);
+int swapCenter(matrix, matrix);
 #endif
