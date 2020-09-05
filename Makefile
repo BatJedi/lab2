@@ -53,13 +53,13 @@ $(EXE) : $(OBJDIR)/main.o $(STLIBS) | $(EXEDIR)
 	gcc -o $@ -I headers $< -L $(STLIBDIR) -lmatrix -lmatrixmath -ltransformations -lppm
 
 
-$(STLIBDIR)/libmatrix.a: matrix.o | $(STLIBDIR)
+$(STLIBDIR)/libmatrix.a: $(OBJDIR)/matrix.o | $(STLIBDIR)
 	ar rcs $@ $^
-$(STLIBDIR)/libmatrixmath.a: matrix.o matrixmath.o | $(STLIBDIR)
+$(STLIBDIR)/libmatrixmath.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o | $(STLIBDIR)
 	ar rcs $@ $^
-$(STLIBDIR)/libppm.a: matrix.o matrixmath.o ppm.o | $(STLIBDIR)
+$(STLIBDIR)/libppm.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o $(OBJDIR)/ppm.o | $(STLIBDIR)
 	ar rcs $@ $^
-$(STLIBDIR)/libtransformations.a: matrix.o matrixmath.o transformations.o ppm.o | $(STLIBDIR)
+$(STLIBDIR)/libtransformations.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o $(OBJDIR)/transformations.o $(OBJDIR)/ppm.o | $(STLIBDIR)
 	ar rcs $@ $^
 
 $(OBJDIR)/%.o:	%.c matrix.h matrixmath.h transformations.h ppm.h | $(OBJDIR)
