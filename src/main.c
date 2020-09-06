@@ -91,13 +91,13 @@ int main(int argc, char* argv[])
 	fprintf(stderr, "Error applying blur transformation");
 	return 1;
       }
-      }
-  
-      writePPM(inputimg, outputpath);
-      if(inputType == 1)
-	free(outputpath);
-      freeimage(inputimg);
     }
+  
+    writePPM(inputimg, outputpath);
+    if(inputType == 1)
+      free(outputpath);
+    freeimage(inputimg);
+  }
 
   return 0;
 }
