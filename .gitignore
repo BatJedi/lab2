@@ -6,4 +6,11 @@
 imgs/*
 statlib/*
 solib/*
-obj/*
+README*
+bin/
+statlib/
+solib/
+stobj/
+soobj/
+mainobj/
+

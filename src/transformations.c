@@ -87,6 +87,7 @@ int applyCenterFlipping(image toFlip, int centerRows, int centerCols)
     return 1;
   }
   freematrix(flippedCenter);
+  return 0;
 }
 
 int applyBlur(image toBlur)

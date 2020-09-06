@@ -10,6 +10,36 @@ void errmessage(char *error)
   exit(1);
 }
 
+void ignoreSpaces(FILE *fp)
+{
+  char ch = getc(fp);
+  while(ch == ' ' || ch == '\n' || ch == '\t')
+  {
+    ch = getc(fp);
+  }
+  ungetc(ch, fp);
+}
+
+void skipComments(FILE *fp)
+{
+  ignoreSpaces(fp);
+  char ch = getc(fp);
+  while(ch == '#')
+  {
+    ch = getc(fp);
+    while(ch != '\n')
+      ch = getc(fp);
+    ignoreSpaces(fp);
+    ch = getc(fp);
+  }
+  if(!(ch >= '0' && ch<= '9'))
+  {
+    printf("%c encountered\n", ch);
+    errmessage("ppm file format error");
+  }
+  ungetc(ch, fp);
+}
+
 image readPPM(char *inputpath)
 {
   image readimg = (image)malloc(sizeof(struct image));
@@ -19,34 +49,30 @@ image readPPM(char *inputpath)
 
   //read magic number
   char ch;
-  if(fscanf(fp, "P%c\n", &ch) != 1 || ch!='6') errmessage("Incorrect format of ppm file. Aborting.");
-  
-  //ignore comments in ppm file
-  ch = getc(fp);
-  while(ch == '#')
-  {
-    ch = getc(fp);
-    while(ch != '\n')
-      ch = getc(fp);
-    ch = getc(fp);
-  }
-  if(!(ch >= '0' && ch<= '9'))
-  {
-    errmessage("ppm file format error");
-  }
+  if(fscanf(fp, "P%c", &ch) != 1 || ch!='6') errmessage("Incorrect format of ppm file. Aborting.");
 
-  //put back character as it is part of width
-  ungetc(ch, fp);
-
-  //read width and height
+  skipComments(fp);
+  //read width height and maxval while skipping comments
   int width, height;
-  fscanf(fp, "%d%d%d\n", &width, &height, &(readimg->maxval));
+  fscanf(fp, "%d", &width); 
+  skipComments(fp); 
+  // read next field
+  fscanf(fp, "%d", &height);
+  // ignore further comments
+  skipComments(fp); 
+  //read maxval
+  fscanf(fp, "%d", &(readimg->maxval));
+  //skip single newline
+  ch = getc(fp);
+  if(ch != '\n') errmessage("Invalid format of image file. Aborted.");
   if(width <= 0 || height <= 0) errmessage("Empty image error. Aborting.");
   if(readimg->maxval > 255) errmessage("PPM color format error. Aborting.");
+
+  // finished reading header
+  
   readimg->width = width;
   readimg->height = height;
   readimg->img = creatematrix(height, width);
-  
   //read the matrix now
   int size = (readimg->height)*(readimg->width);
   int readCount = 0;

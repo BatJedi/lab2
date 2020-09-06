@@ -1,78 +1,102 @@
+.ONESHELL:
+SHELL = /bin/bash
+
+#static library directory
 STLIBDIR := statlib
+#dynamic library directory
 SOLIBDIR := solib
-OBJDIR := obj
+#static library objects directory
+STOBJDIR := stobj
+#dynamic library objects directory
+SOOBJDIR := soobj
+#default image directory
 IMAGEDIR := imgs
+#test images directory
 TESTDIR := test
+#executable directory
 EXEDIR := bin
+#main object directory
+MAINOBJDIR := mainobj
 
-INPUTPATH := $(IMAGEDIR)/input.ppm
-OUTPUTPATH := $(IMAGEDIR)/output.ppm
-
-USEROUTPATH := $(IMAGEDIR)
-
-
-EXE := $(EXEDIR)/app
-STLIBS := $(addprefix $(STLIBDIR)/, libmatrix.a libmatrixmath.a libppm.a libtransformations.a)
-SOLIBS := $(addprefix -l, libmatrix.so libmatrixmath.so libppm.so libtransformations.so)
-OBJS := $(addprefix $(OBJDIR), $(patsubst src/%.c, %.o, $(wildcard src/*c)));
+#executable file generated from static libraries
+STEXE := $(EXEDIR)/stapp
+#executable file generated using dynamic libraries
+SOEXE := $(EXEDIR)/soapp
+#static libraries
+STLIBS := $(addprefix $(STLIBDIR)/lib, matrix.a matrixmath.a ppm.a transformations.a)
+#dynamic libraries
+SOLIBS := $(addprefix -$(SOLIBDIR)/lib, matrix.so matrixmath.so ppm.so transformations.so)
+#static library object files for archiving
+STOBJS := $(addprefix $(STOBJDIR)/, ppm.o transformations.o matrixmath.o matrix.o);
+#names of libraries to be used when compiling in correct linking order
+LIBS := $(addprefix -l, ppm transformations matrixmath matrix)
+#header files for dependency checking
+HEADERS := $(patsubst headers/%,%,$(wildcard headers/*.h))
+#HEADERS := transformations.h ppm.h matrix.h matrixmath.h
 
 vpath %.c src
 vpath %.h headers
 
 all:	build
 
-build:	$(EXE)
+build:	$(STEXE)
 
-run:	$(EXE)
-	./$(EXE) 0 2 $(INPUTPATH) $(OUTPUTPATH)
-	@if [ $(USEROUTPATH) != $(IMAGEDIR) ]; then
-	@if [ $(USEROUTPATH) != *".ppm" ]; then
-	@convert $(IMAGEDIR)/useroutput.ppm $(USEROUTPATH)
+run:	$(STEXE)
+	@if [ -f $(IMAGEDIR)/tmp/userinput.ppm ]; then
+	@useroutpath=`cat imgs/tmp/useroutpath.txt`
+	@./$(STEXE) 0 2 $(IMAGEDIR)/tmp/userinput.ppm $(IMAGEDIR)/tmp/useroutput.ppm
+	@if [ $${useroutpath##*.} != ppm ]; then
+	@convert $(IMAGEDIR)/useroutput.ppm $$useroutpath
 	@else
-	@cp $(IMAGEDIR)/useroutput.ppm $(USEROUTPATH)
+	@cp $(IMAGEDIR)/tmp/useroutput.ppm $$useroutpath
 	@fi
-	$(eval INPUTPATH:=$(IMAGEDIR)/input.ppm)
-	$(eval OUTPUTPATH:=$(IMAGEDIR)/output.ppm)
-	@rm $(IMAGEDIR)/userinput.ppm
-	@rm $(IMAGEDIR)/useroutput.ppm
-	@fi
-
-prepare:	$(EXE)
-	@read -p "Enter input file path" userinputpath;
-	@read -p "Enter ouput file path" useroutpath;
-	$(eval USEROUTPATH:=$(useroutpath))
-	@if [ $(userinputpath) != *".ppm" ]; then
-	@convert $(userinputpath) $(IMAGEDIR)/userinput.ppm
 	@else
-	@cp $(userinputpath) $(IMAGEDIR)/userinput.ppm
+	@./$(STEXE) 0 2 $(IMAGEDIR)/input.ppm $(IMAGEDIR)/output.ppm
 	@fi
-	$(eval INPUTPATH:=$(IMAGEDIR)/userinput.ppm)
-	$(eval OUTPUTPATH:=$(IMAGEDIR)/useroutput.ppm)
 
-$(EXE) : $(OBJDIR)/main.o $(STLIBS) | $(EXEDIR)
-	gcc -o $@ -I headers $< -L $(STLIBDIR) -lmatrix -lmatrixmath -ltransformations -lppm
+prepare:
+	@read -p "Enter input file path " userinputpath
+	@read -p "Enter output file path " useroutpath
+	if [ -f $$userinputpath -a -d "$${useroutpath%/*}" -a "$${useroutpath%/*}/" != "$$useroutpath" ]; then
+	@mkdir $(IMAGEDIR)/tmp
+	@echo $$useroutpath > $(IMAGEDIR)/tmp/useroutpath.txt
+	@if [ "$${userinputpath##*.}" != "ppm" ]; then
+	@convert $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
+	@else
+	@cp $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
+	@fi
+	@else
+	@echo "Please recheck input and ouput paths"
+	@fi
 
+liba: $(STLIBS)
 
-$(STLIBDIR)/libmatrix.a: $(OBJDIR)/matrix.o | $(STLIBDIR)
-	ar rcs $@ $^
-$(STLIBDIR)/libmatrixmath.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o | $(STLIBDIR)
-	ar rcs $@ $^
-$(STLIBDIR)/libppm.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o $(OBJDIR)/ppm.o | $(STLIBDIR)
-	ar rcs $@ $^
-$(STLIBDIR)/libtransformations.a: $(OBJDIR)/matrix.o $(OBJDIR)/matrixmath.o $(OBJDIR)/transformations.o $(OBJDIR)/ppm.o | $(STLIBDIR)
+$(STEXE) : $(MAINOBJDIR)/main.o $(STLIBS) | $(EXEDIR)
+	gcc -o $@ -I headers $< -L $(STLIBDIR) $(LIBS)
+
+$(STLIBDIR)/lib%.a: $(STOBJDIR)/%.o | $(STLIBDIR)
 	ar rcs $@ $^
 
-$(OBJDIR)/%.o:	%.c matrix.h matrixmath.h transformations.h ppm.h | $(OBJDIR)
+$(STOBJDIR)/%.o: %.c $(HEADERS) | $(STOBJDIR)
 	gcc -o $@ -c -I headers $<
 
+$(MAINOBJDIR)/%.o: %.c $(HEADERS) | $(MAINOBJDIR)
+	gcc -o $@ -c -I headers $<
+
+$(MAINOBJDIR):
+	mkdir -p $@
 $(EXEDIR):
-	mkdir -p $(EXEDIR)
-$(OBJDIR):
-	mkdir -p $(OBJDIR)
+	mkdir -p $@
+$(STOBJDIR):
+	mkdir -p $@
 $(STLIBDIR):
-	mkdir -p $(STLIBDIR)
+	mkdir -p $@
 
 .PHONY: clean
 clean:
-	rm -rf $(STLIBDIR) $(SOLIB) $(OBJDIR) $(EXEDIR)
+	rm -rf $(STLIBDIR) $(SOLIB) $(MAINOBJDIR) $(STOBJDIR) $(SOLIBDIR) $(EXEDIR)
+	rm -rf $(IMAGEDIR)/output.ppm $(IMAGEDIR)/tmp
+
+#Don't delete intermediate object files used for creating static libraries
+.SECONDARY: $(STOBJS)
 
