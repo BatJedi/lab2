@@ -7,3 +7,10 @@ imgs/*
 statlib/*
 solib/*
 README*
+bin/
+statlib/
+solib/
+stobj/
+soobj/
+mainobj/
+

@@ -57,14 +57,16 @@ run:	$(STEXE)
 prepare:
 	@read -p "Enter input file path " userinputpath
 	@read -p "Enter output file path " useroutpath
-	@if [ -f $$userinputpath -a -d "$${useroutpath%/*}" ]; then
+	if [ -f $$userinputpath -a -d "$${useroutpath%/*}" -a "$${useroutpath%/*}/" != "$$useroutpath" ]; then
 	@mkdir $(IMAGEDIR)/tmp
 	@echo $$useroutpath > $(IMAGEDIR)/tmp/useroutpath.txt
 	@if [ "$${userinputpath##*.}" != "ppm" ]; then
-	@convert $$userinputpath $(IMAGEDIR)/userinput.ppm
+	@convert $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
 	@else
 	@cp $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
 	@fi
+	@else
+	@echo "Please recheck input and ouput paths"
 	@fi
 
 liba: $(STLIBS)
