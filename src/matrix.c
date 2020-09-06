@@ -44,20 +44,6 @@ matrix creatematrix(int rows,int cols)
   return res;
 }
 
-void freematrix(matrix X)
-{
-  if(!X) return;
-  for(int i = 0; i<X->rows; i++)
-  {
-    if(X->R[i] != NULL) free(X->R[i]);
-    if(X->G[i] != NULL) free(X->G[i]);
-    if(X->B[i] != NULL) free(X->B[i]);
-  }
-  if(X->R != NULL) free(X->R);
-  if(X->G != NULL) free(X->G);
-  if(X->B != NULL) free(X->B);
-  free(X);
-}
 
 matrix paddedSlidingWindow(matrix input, int windowSize, int padVal)
 {
@@ -244,4 +230,19 @@ int fillCenter(matrix img, matrix center)
   if(rowIdx == cenRows && colIdx == cenCols)
     return 0;
   else return 2;
+}
+
+void freematrix(matrix X)
+{
+  if(X == NULL) return;
+  for(int i = 0; i<X->rows; i++)
+  {
+    if(X->R[i] != NULL) free(X->R[i]);
+    if(X->G[i] != NULL) free(X->G[i]);
+    if(X->B[i] != NULL) free(X->B[i]);
+  }
+  if(X->R != NULL) free(X->R);
+  if(X->G != NULL) free(X->G);
+  if(X->B != NULL) free(X->B);
+  free(X);
 }

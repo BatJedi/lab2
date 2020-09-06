@@ -13,4 +13,5 @@ solib/
 stobj/
 soobj/
 mainobj/
+*tmp/*
 

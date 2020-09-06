@@ -124,13 +124,14 @@ int writePPM(image writeimg, char *outputpath)
 
 void freeimage(image toFree)
 {
-  if(!toFree)
+  if(toFree == NULL)
   {
     errmessage("Couldn't free image");
     return;
   }
   if(toFree->img != NULL)
     freematrix(toFree->img);
+  else errmessage("No matrix to free");
   free(toFree);
   return;
 }
