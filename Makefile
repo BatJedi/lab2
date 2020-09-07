@@ -55,7 +55,7 @@ run:	$(STEXE)
 	@useroutpath=`cat imgs/tmp/useroutpath.txt`
 	@$< 0 2 $(IMAGEDIR)/tmp/userinput.ppm $(IMAGEDIR)/tmp/useroutput.ppm
 	@if [ $${useroutpath##*.} != ppm ]; then
-	@convert $(IMAGEDIR)/useroutput.ppm $$useroutpath
+	@convert $(IMAGEDIR)/tmp/useroutput.ppm $$useroutpath
 	@else
 	@cp $(IMAGEDIR)/tmp/useroutput.ppm $$useroutpath
 	@fi
@@ -77,8 +77,10 @@ run_dynamic: $(SOEXE) $(SOLIBS)
 	@fi 
 
 prepare:
-	@read -p "Enter input file path " userinputpath
-	@read -p "Enter output file path " useroutpath
+	@echo "If you want to convert non-ppm images, make sure you have imagemagick installed." "To install, use command: sudo apt install imagemagick"
+	@echo
+	@read -p "Enter input ABSOLUTE file path " userinputpath
+	@read -p "Enter output ABSOLUTE file path " useroutpath
 	if [ -f $$userinputpath -a -d $${useroutpath%/*} -a "$${useroutpath%/*}/" != "$$useroutpath" ]; then
 	@mkdir -p $(IMAGEDIR)/tmp
 	@echo $$useroutpath > $(IMAGEDIR)/tmp/useroutpath.txt
@@ -88,12 +90,15 @@ prepare:
 	@cp $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
 	@fi
 	@else
-	@echo "Please recheck input and output paths"
+	@echo "Please recheck input and output paths. Make sure they're absolute"
 	@fi
 
-tests: $(TESTDIR) $(STEXE)
+tests: $(STEXE)
+	@if [ -d $(TESTDIR) ]; then
 	@mkdir -p $(TESTDIR)/out
 	@./$(STEXE) 0 1 $(TESTFILES)
+	@echo All test results generated in $(TESTDIR)/out
+	@fi
 
 test%: $(TESTDIR)/test%.ppm $(STEXE)
 	@if [ -f $< ]; then
