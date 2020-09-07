@@ -94,9 +94,20 @@ prepare:
 tests: $(TESTDIR) $(STEXE)
 	@mkdir -p $(TESTDIR)/out
 	@./$(STEXE) 0 1 $(TESTFILES)
+
 test%: $(TESTDIR)/test%.ppm $(STEXE)
+	@if [ -f $< ]; then
 	@mkdir -p $(TESTDIR)/out
 	@./$(STEXE) 0 1 $<
+	@echo $@ generated in $(TESTDIR)/out
+	@else
+	@echo $< "doesn't exist"
+	@fi
+
+$(TESTDIR)/test%.ppm:
+	@if [ -f $@ ]; then
+	@echo
+	@fi
 
 T%: $(STEXE)
 	@TRANSTYPE=$@

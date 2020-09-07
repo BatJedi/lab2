@@ -11,4 +11,10 @@ matrix blur(matrix, int);
 int applyDeepFry(image, int);
 matrix deepFry(matrix, int);
 matrix fryKernel(int);
+matrix sobelKernel();
+matrix sobel(matrix);
+int applySobel(image);
+matrix edgeKernel(int);
+matrix edge(matrix, int);
+int detectEdge(image);
 #endif

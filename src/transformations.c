@@ -33,11 +33,35 @@ matrix blur(matrix X, int padval)
   return conv;
 }
 
+matrix sobel(matrix X)
+{
+  if(!X) return X;
+  scaleSeparately(X, 0.3, 0.3, 0.3);
+  matrix kernel = sobelKernel();
+  if(!kernel) return NULL;
+  matrix conv = convolution(kernel, X, 0);
+  if(!conv) return NULL;
+  freematrix(kernel);
+  return conv;
+}
+
 matrix deepFry(matrix X, int degree)
 {
   int padval = 0;
   if(!X) return X;
   matrix kernel = fryKernel(degree);
+  if(!kernel) return NULL;
+  matrix conv = convolution(kernel, X, padval);
+  if(!conv) return NULL;
+  freematrix(kernel);
+  return conv;
+}
+
+matrix edge(matrix X, int degree)
+{
+  int padval = 100;
+  if(!X) return X;
+  matrix kernel = edgeKernel(degree);
   if(!kernel) return NULL;
   matrix conv = convolution(kernel, X, padval);
   if(!conv) return NULL;
@@ -51,7 +75,34 @@ int applyFlipping(image toFlip)
   matrix img = toFlip->img;
   matrix flippedimg = flipTrans(img);
   if(!flippedimg) return 1;
+  castUchar(flippedimg);
   toFlip->img = flippedimg;
+  if(img != NULL) freematrix(img);
+  else return 1;
+  return 0;
+}
+
+int applySobel(image toSobel)
+{
+  if(!toSobel) return 1;
+  matrix img = toSobel->img;
+  matrix sobelimg = sobel(img);
+  if(!sobelimg) return 1;
+  castUchar(sobelimg);
+  toSobel->img = sobelimg;
+  if(img != NULL) freematrix(img);
+  else return 1;
+  return 0;
+}
+
+int detectEdge(image toDetect)
+{
+  if(!toDetect) return 1;
+  matrix img = toDetect->img;
+  matrix edges = edge(img, 8);
+  if(!edges) return 1;
+  castUchar(edges);
+  toDetect->img = edges;
   if(img != NULL) freematrix(img);
   else return 1;
   return 0;
@@ -65,7 +116,7 @@ int applyCenterFlipping(image toFlip, int centerRows, int centerCols)
   {
     fprintf(stderr, "Invalid center matrix dimensions\n");
     return 1;
-  }    
+  }
   matrix center = creatematrix(centerRows, centerCols);
   if(!center)
   {
@@ -97,6 +148,7 @@ int applyBlur(image toBlur)
   matrix img = toBlur->img;
   matrix blurred = blur(img, padval);
   if(!blurred) return 1;
+  castUchar(blurred);
   toBlur->img = blurred;
   if(img != NULL) freematrix(img);
   else return 1;
@@ -109,6 +161,7 @@ int applyDeepFry(image toFry, int degree)
   matrix img = toFry->img;
   matrix fried = deepFry(img, degree);
   if(!fried) return 1;
+  castUchar(fried);
   toFry->img = fried;
   if(img != NULL) freematrix(img);
   else return 1;
@@ -126,9 +179,9 @@ matrix fryKernel(int n)
     {
       if(i+j == 1 || i+j == 3)
       {
-	result->R[i][j] = 0;
-	result->G[i][j] = 0;
-	result->B[i][j] = 0;
+	result->R[i][j] = -1;
+	result->G[i][j] = -1;
+	result->B[i][j] = -1;
       }
       else
       {
@@ -141,6 +194,51 @@ matrix fryKernel(int n)
   result->R[1][1] = n;
   result->G[1][1] = n;
   result->B[1][1] = n;
+  return result;
+}
+
+matrix sobelKernel()
+{
+  matrix result = creatematrix(3,3);
+  if(!result) return NULL;
+
+  for(int i = 0; i<3; i++)
+  {
+    for(int j = 0; j<3; j++)
+    {
+	int val1 = j-1;
+	int val2 = i%2+1;
+	result->R[i][j] = val1*val2;
+	result->G[i][j] = val1*val2;
+	result->B[i][j] = val1*val2;
+    }
+  }
+  return result;
+}
+
+matrix edgeKernel(int n)
+{
+  matrix result = creatematrix(3,3);
+  if(!result) return NULL;
+
+  for(int i = 0; i<3; i++)
+  {
+    for(int j = 0; j<3; j++)
+    {
+      if(i == 1 && j == 1)
+      {
+	result->R[i][j] = n;
+	result->G[i][j] = n;
+	result->B[i][j] = n;
+      }
+      else
+      {
+	result->R[i][j] = -1;
+	result->G[i][j] = -1;
+	result->B[i][j] = -1;
+      }
+    }
+  }
   return result;
 }
 

@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
       return 1;
     }
     image inputimg = readPPM(inputpath);
+    
     if(atoi(argv[1]) <= 1)
     {
       int centerRows = (inputimg->img->rows>=256)? 256:(inputimg->img->rows)/2;
@@ -78,11 +79,11 @@ int main(int argc, char* argv[])
       int flipResult = applyCenterFlipping(inputimg, centerRows, centerCols);
       if(flipResult != 0)
       {
-	fprintf(stderr, "Error applying flipping transformation");
-	return 1;
+        fprintf(stderr, "Error applying flipping transformation");
+        return 1;
       }
     }
-
+    
     if(atoi(argv[1])%2 == 0)
     {
       int blurResult = applyBlur(inputimg);
