@@ -144,6 +144,42 @@ int scale(matrix input, float scalar)
   return 0;
 }
 
+int castUchar(matrix input)
+{
+  if(!input) return 1;
+  for(int i = 0; i<input->rows; i++)
+  {
+    for(int j = 0; j<input->cols; j++)
+    {
+      unsigned char Rval = (input->R[i][j]);
+      unsigned char Gval = (input->G[i][j]);
+      unsigned char Bval = (input->B[i][j]);
+      input->R[i][j] = Rval;
+      input->G[i][j] = Gval;
+      input->B[i][j] = Bval;
+    }
+  }
+  return 0;
+}
+
+int scaleSeparately(matrix input, float rmul, float gmul, float bmul)
+{
+  if(!input) return 1;
+  for(int i = 0; i<input->rows; i++)
+  {
+    for(int j = 0; j<input->cols; j++)
+    {
+      float Rval = (input->R[i][j])*rmul;
+      float Gval = (input->G[i][j])*gmul;
+      float Bval = (input->B[i][j])*bmul;
+      input->R[i][j] = (int)Rval;
+      input->G[i][j] = (int)Gval;
+      input->B[i][j] = (int)Bval;
+    }
+  }
+  return 0;
+}
+
 matrix convolution(matrix kernel, matrix input, int padVal)
 {
   if(kernel->rows != kernel->cols)
