@@ -31,6 +31,15 @@ int matrixalloc(matrix X)
     X->B[i] = (int*)malloc(sizeof(int)*cols);
     if(!(X->B[i])) return 2;
   }
+  for(int i=0; i<rows; i++)
+  {
+    for(int j=0; j<cols; j++)
+    {
+      X->R[i][j]=0;
+      X->G[i][j]=0;
+      X->B[i][j]=0;
+    }
+  }
   return 0;
 }
 
