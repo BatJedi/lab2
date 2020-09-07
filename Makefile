@@ -80,7 +80,7 @@ prepare:
 	@read -p "Enter input file path " userinputpath
 	@read -p "Enter output file path " useroutpath
 	if [ -f $$userinputpath -a -d $${useroutpath%/*} -a "$${useroutpath%/*}/" != "$$useroutpath" ]; then
-	@mkdir $(IMAGEDIR)/tmp
+	@mkdir -p $(IMAGEDIR)/tmp
 	@echo $$useroutpath > $(IMAGEDIR)/tmp/useroutpath.txt
 	@if [ "$${userinputpath##*.}" != "ppm" ]; then
 	@convert $$userinputpath $(IMAGEDIR)/tmp/userinput.ppm
@@ -100,6 +100,7 @@ test%: $(TESTDIR)/test%.ppm $(STEXE)
 
 T%: $(STEXE)
 	@TRANSTYPE=$@
+	@if [ $${TRANSTYPE:1} -lt 3 ]; then
 	@if [ -f $(IMAGEDIR)/tmp/userinput.ppm ]; then
 	@useroutpath=`cat imgs/tmp/useroutpath.txt`
 	@./$(STEXE) $${TRANSTYPE:1} 2 $(IMAGEDIR)/tmp/userinput.ppm $(IMAGEDIR)/tmp/useroutput.ppm
@@ -110,6 +111,7 @@ T%: $(STEXE)
 	@fi
 	@else
 	@./$(STEXE) $${TRANSTYPE:1} 2 $(IMAGEDIR)/input.ppm $(IMAGEDIR)/output.ppm
+	@fi
 	@fi
 
 liba: $(STLIBS) $(STOBJS)
